@@ -29,15 +29,15 @@ const Hireme = (props) => {
 				href={MY_LINKEDIN}
 				className='linkedin-img'
 				{...disabled}
-				src='./public/in-tile.svg'
+				src='./dist/public/in-tile.svg'
 			/>
 			<ImgLink
 				href={MY_GITHUB}
 				className='github-img'
 				{...disabled}
-				src='./public/github.svg'
+				src='./dist/public/github.svg'
 			/>
-			<img className='upwork-img' src='./public/upwork-tile.svg' {...disabled} />
+			<img className='upwork-img' src='./dist/public/upwork-tile.svg' {...disabled} />
 			<RevealGrid
 				gridWidth={8}
 				gridHeight={11}
