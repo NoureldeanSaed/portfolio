@@ -1,0 +1,38 @@
+@keyframes portal {
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(360deg)}
+}
+
+.portal {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-35%, 35%);
+  width: 100%;
+  height: 100%;
+}
+
+svg {
+  background: transparent;
+  width: 100%;
+  height: 100%;
+}
+circle {
+  transform-origin: center;
+  animation: portal 1s linear 0ms infinite normal none running;
+  background: transparent;
+  &:nth-child(11) {
+    animation-duration: 0s;
+  }
+}
+
+.animate (@index) when (@index < 30) {
+  .animate((@index + 2));
+  @plusone: (@index + 1);
+  @duration: (100 - @index * 3);
+  circle:nth-child(@{index}), circle:nth-child(@{plusone}) {
+    animation-duration: unit(@duration, s)
+  }
+}
+
+.animate(1);
