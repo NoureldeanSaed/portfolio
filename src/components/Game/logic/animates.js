@@ -31,7 +31,8 @@ export default (WIDTH, HEIGHT) => (ctx, playStory, ...animations) => {
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 		const storyOutput = playStory();
 		animations.forEach((animation) => animation(storyOutput));
-		drawFramesPerSecond();
+		// Uncomment to get Frames per second
+		// drawFramesPerSecond();
 		ctx.restore();
 	};
 	run();
