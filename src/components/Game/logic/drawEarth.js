@@ -1,22 +1,34 @@
 // Inspired by https://codepen.io/ZORLAX/pen/yQmMbo?editors=0010
-import { randomBetween, transitionToColor, getRadian, $20 } from '../../../helpers';
-import drawFactory from './drawFactory';
+import uuidv4 from 'uuid/v4';
+
+import { randomBetween, transitionToColor, $20, $30 } from '../../../helpers';
+import drawFactory from './drawFactory.js';
 
 const massTypes = Object.freeze({ CLOUD: 0, LAND: 1 });
 const massProps = Object.freeze({
-	MAX_LENGTH: 70,
-	MIN_LENGTH: 5,
-	MAX_WIDTH: 10,
-	MIN_WIDTH: 30,
+	MAX_LENGTH: 80,
+	MIN_LENGTH: 15,
+	MAX_WIDTH: 30,
+	MIN_WIDTH: 15,
 	MAX_DX: 1.2,
 	MIN_DX: 0.5,
 	FIXED_DX: 0.7
 });
 
 let earthHealth = 1;
+let earthPopulation = 100000;
+const rabbitingRatio = 1.01;
+let pollution = 0.5;	// Between 0 and 1 // Less than .5 is healing // More than .5 is killing
+let noFactories = 0;
+let planetState = 'infected';
 
-export default (WIDTH, HEIGHT, globals) => (ctx) => {
-	const Factory = drawFactory(ctx);
+export const getPollution = () => pollution;
+export const getPlanetState = () => planetState;
+export const getEarthHealth = () => earthHealth;
+
+export default (WIDTH, HEIGHT, vars) => (ctx) => {
+	const { getMouseMoveEvent, factoryActions, ...globals } = vars;
+	const Factory = drawFactory(ctx, globals);
 	const { EARTH_X, EARTH_Y } = globals;
 	const EARTH_R = 120;
 	const randomAroundCenter = (axisPoint, controlPoint = 0) =>
@@ -41,14 +53,10 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 			this.width = width;
 			this.length = length;
 			this.type = type;
-			if (type === massTypes.LAND) this.factory = new Factory();
+			if (type === massTypes.LAND) this.id = uuidv4();
 		}
 
 		draw = () => {
-			ctx.save();
-			ctx.beginPath();
-			ctx.arc(EARTH_X, EARTH_Y, 120, 0, Math.PI * 2, false);
-			ctx.clip();
 			ctx.beginPath();
 			ctx.moveTo(this.x, this.y);
 			ctx.lineCap = 'round';
@@ -59,19 +67,27 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 				: transitionToColor('#85CC66', '#C58C45', - earthHealth + 1);
 			ctx.setLineDash([]);
 			ctx.stroke();
-			ctx.restore();
-			// if (this.factory) {
-			// 	const factoryProps = { x: this.x, y: this.y, width: this.width, length: this.length };
-			// 	this.factory.update(factoryProps, this.width / massProps.MAX_WIDTH * 0.3);
-			// }
 		}
 
 		update = () => {
 			if (this.x < (EARTH_X - 240)) this.x = EARTH_X + 240;
 			this.x -= this.dx;
 			this.draw();
-			// this.factories.forEach((factory) => factory.update(this.x, this.y));
 		}
+
+		// Remove the 0.3 and 0.2 from the scale factor and just replace the numbers in drawFactory.js
+		pushFactory = () => {
+			if ((this.width / massProps.MAX_WIDTH) - 0.2 >= 0.4 && !this.factory) {
+				this.factory = new Factory(
+					this.id,
+					(this.width / massProps.MAX_WIDTH) - 0.2,
+					{ getMouseMoveEvent, factoryActions }
+				);
+				noFactories++;
+			}
+		};
+
+		destroyFactory = () => {this.factory = null; noFactories--;};
 	}
 
 	const clouds = $20.map(() => new Mass(
@@ -82,7 +98,7 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 		randomBetween(massProps.MIN_LENGTH, massProps.MAX_LENGTH),
 		massTypes.CLOUD
 	));
-	const lands = $20.map(() => new Mass(
+	const lands = $30.map(() => new Mass(
 		randomAroundCenter(EARTH_X, massProps.MAX_LENGTH),
 		randomAroundCenter(EARTH_Y),
 		massProps.FIXED_DX,
@@ -91,20 +107,56 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 		massTypes.LAND
 	));
 
+	const createFactory = () => {
+		lands[~~randomBetween(0, lands.length)].pushFactory();
+	};
+
+	const destroyFactory = (factoryId) => lands
+		.forEach((land) => factoryId === land.id ? land.destroyFactory() : null);
+
 	const damageEarth = () => {
 		if (earthHealth > 0)
-			earthHealth -= 0.01;
+			earthHealth -= 0.02;
+		if (earthHealth <= 0) earthHealth = 0;
+		if (earthPopulation > 0)
+			earthPopulation -= ~~(earthPopulation * 0.01);
 	};
 
 	const animations = () => {
+		if (planetState === 'infected') {
+			if (noFactories > 1 && pollution <= 1) pollution += noFactories * 0.001;
+			else if (pollution >= 0) pollution -= 0.01;
+			earthPopulation += ~~(earthPopulation * rabbitingRatio * earthHealth);
+			if (earthHealth === 0) {
+				earthPopulation = 0;
+				planetState = 'healing';
+			}
+		} else if (planetState === 'healing') {
+			earthHealth += 0.001;
+			lands.forEach((land) => land.destroyFactory());
+			if (earthHealth > 1) earthHealth = 1;
+		}
 		circle(EARTH_X, EARTH_Y, 125, '#0C1438');
 		circle(EARTH_X, EARTH_Y, 120, '#1976B5');
+		ctx.save();
+		ctx.beginPath();
+		ctx.arc(EARTH_X, EARTH_Y, 120, 0, Math.PI * 2, false);
+		ctx.clip();
 		lands.forEach((land) => land.update());
+		lands.forEach((land) => {
+			if (land.factory) {
+				const factoryProps = { x: land.x, y: land.y, width: land.width, length: land.length };
+				const scaleFactor = (land.width / massProps.MAX_WIDTH * 0.3) - 0.2;
+				land.factory.update(factoryProps, scaleFactor, { getMouseMoveEvent, factoryActions });
+			}
+		});
 		clouds.forEach((cloud) => cloud.update());
 		shadow(EARTH_X, EARTH_Y, 120, 'rgba(0,0,0,.2)');
 		ctx.fillStyle = 'rgba(0,0,0,0)';
 		ctx.fill();
+		ctx.restore();
+
 	};
 
-	return [animations, damageEarth];
+	return [animations, { damageEarth, createFactory, destroyFactory }];
 };

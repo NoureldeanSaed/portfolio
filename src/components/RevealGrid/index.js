@@ -22,7 +22,7 @@ const RevealGrid = (props) => {
 			currentGroup[row][col] === 1 ? 'hidden' : 'visible',
 			getTransformOrigin(rootIndex)(currentGroup, row, col).replace(' ', '-'),
 		);
-		spanArray.push(<span {...cell} className={className}/>);
+		spanArray.push(<span key={index} {...cell} className={className}/>);
 	}
 
 	return (
@@ -48,7 +48,7 @@ RevealGrid.propTypes = {
 		height: PropTypes.number.isRequired
 	}).isRequired,
 	status: PropTypes.number.isRequired,
-	levels: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+	levels: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))).isRequired,
 	timeout: PropTypes.number.isRequired
 };
 

@@ -1,6 +1,7 @@
 import uuidv4 from 'uuid/v4';
 
 import { bossMood } from './drawBoss';
+import { getPlanetState } from './drawEarth';
 import {
 	$20,
 	randomBetween,
@@ -12,7 +13,12 @@ import {
 } from '../../../helpers';
 
 // Number of seconds before new missile
-const missileFrequency = Object.freeze({ 0: 5, 1: 2, 2: 0.5 });
+const missileFrequency = Object.freeze({
+	[bossMood.HAPPY]: Infinity,
+	[bossMood.COOL]: 5,
+	[bossMood.MAD]: 2,
+	[bossMood.PISSED]: 0.5
+});
 
 export default (WIDTH, HEIGHT, globals) => (ctx, vars) => {
 	const { loc, createExplosion } = vars;
@@ -112,6 +118,7 @@ export default (WIDTH, HEIGHT, globals) => (ctx, vars) => {
     		const { damageEarth } = vars;
     		damageEarth(this.previousLocation);
     	}
+    	if (getPlanetState() === 'healing' && Math.random() < 0.05) this.currentStatus = 'DESTROY';
     	switch (this.currentStatus) {
     	case 'STARTING_PATH': this.startPath(); break;
     	case 'FIRE': this.fire(); break;
@@ -125,10 +132,9 @@ export default (WIDTH, HEIGHT, globals) => (ctx, vars) => {
     }
 	}
 
-
 	recallEvery(
 		() => missiles.push(new Missile()),
-		() => 1000 * missileFrequency[madness]
+		() => console.log('madness', madness) || (1000 * missileFrequency[madness])
 	);
 
 	const animate = (storyOutput) => {
@@ -137,5 +143,7 @@ export default (WIDTH, HEIGHT, globals) => (ctx, vars) => {
 		missiles.forEach((missile) => missile.update());
 	};
 
-	return animate;
+	const rageFire = () => $20.forEach(() => missiles.push(new Missile()));
+
+	return [animate, rageFire];
 };

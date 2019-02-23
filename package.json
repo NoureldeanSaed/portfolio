@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test",
     "dist": "webpack",
-    "watch": "live-server dist"
+    "watch": "live-server"
   },
   "dependencies": {
     "classnames": "^2.2.6",

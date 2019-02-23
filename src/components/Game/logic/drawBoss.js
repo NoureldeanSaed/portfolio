@@ -1,4 +1,4 @@
-export const bossMood = Object.freeze({ COOL: 0, MAD: 1, PISSED: 2 });
+export const bossMood = Object.freeze({ HAPPY: 0, COOL: 1, MAD: 2, PISSED: 3 });
 let madnessLevel = bossMood.COOL;
 const pissOff = () => (madnessLevel = Math.round((madnessLevel + 0.1) * 10) / 10);
 const coolDown = () => (madnessLevel = Math.round((madnessLevel - 0.1) * 10) / 10);
@@ -20,19 +20,6 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 	});
 	const draw = (storyOutput) => {
 		const { bossMood: madness = bossMood.COOL } = storyOutput;
-		// Background
-		// const gradient = ctx.createRadialGradient(
-		// 	BOSS_X + bossProps.BOSS_WIDTH / 2,
-		// 	BOSS_Y + bossProps.BOSS_HEIGHT / 2,
-		// 	bossProps.BOSS_WIDTH * 0.1,
-		// 	BOSS_X + bossProps.BOSS_WIDTH / 2,
-		// 	BOSS_Y + bossProps.BOSS_HEIGHT / 2,
-		// 	bossProps.BOSS_WIDTH * 1.2
-		// );
-		// gradient.addColorStop(0, '#C12F2A');
-		// gradient.addColorStop(1, '#00000000');
-		// ctx.fillStyle = gradient;
-		// ctx.fillRect(0, 0, WIDTH, HEIGHT);
 		if (madnessLevel < madness) pissOff();
 		if (madnessLevel > madness) coolDown();
 		// Body
@@ -62,10 +49,10 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 		ctx.fill();
 		// Angry eyebrow
 		ctx.beginPath();
-		ctx.moveTo(BOSS_X + bossProps.EYE_X, BOSS_Y + bossProps.FORHEAD_HEIGHT);
+		ctx.moveTo(BOSS_X + bossProps.EYE_X, BOSS_Y + bossProps.FORHEAD_HEIGHT - 1);
 		ctx.lineTo(
 			BOSS_X + bossProps.BOSS_WIDTH / 2,
-			BOSS_Y + bossProps.FORHEAD_HEIGHT + (bossProps.EYE_HEIGHT * madnessLevel / 2)
+			BOSS_Y + bossProps.FORHEAD_HEIGHT + (bossProps.EYE_HEIGHT * (madnessLevel - 1) / 2) - 1
 		);
 		ctx.lineTo(
 			BOSS_X + (bossProps.EYE_WIDTH * 2) + bossProps.EYE_X + bossProps.EYE_SPACING,

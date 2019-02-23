@@ -7,7 +7,9 @@ import drawBgStars from './drawBgStars';
 import animates from './animates';
 import playStory from './story';
 
-export default (WIDTH, HEIGHT, getMouseMoveEvent) => {
+export default (WIDTH, HEIGHT, actions) => {
+	const { getMouseMoveEvent, selectFactory, deselectFactory, getSelection } = actions;
+	const factoryActions = { selectFactory, deselectFactory, getSelection };
 	const globals = {
 		BOSS_X: 400 - 45,
 		BOSS_Y: HEIGHT * 0.1,
@@ -16,7 +18,7 @@ export default (WIDTH, HEIGHT, getMouseMoveEvent) => {
 	};
 	return {
 		drawBoss: drawBoss(WIDTH, HEIGHT, globals),
-		drawEarth: drawEarth(WIDTH, HEIGHT, globals),
+		drawEarth: drawEarth(WIDTH, HEIGHT, { getMouseMoveEvent, factoryActions, ...globals }),
 		drawAtmosphere: drawAtmosphere(WIDTH, HEIGHT, globals),
 		drawMissiles: drawMissiles(WIDTH, HEIGHT, { getMouseMoveEvent, ...globals }),
 		drawExplosions: drawExplosions(WIDTH, HEIGHT),

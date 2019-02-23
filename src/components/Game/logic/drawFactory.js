@@ -1,14 +1,24 @@
-import { getRadian } from '../../../../helpers';
+import { getRadian } from '../../../helpers';
 
 export default (ctx) => class Factory {
-
 		angle = 0;
+		currentScaleFactor = 0;
 
-		draw = (factoryProps, scaleFactor = 1) => {
+		constructor (landId, scaleFactor, functions) {
+			this.id = landId;
+			this.scaleFactor = scaleFactor;
+			this.getMouseMoveEvent = functions.getMouseMoveEvent;
+			this.factoryActions = functions.factoryActions;
+		}
+
+		draw = (factoryProps) => {
+			const {
+				currentScaleFactor: scaleFactor = 1,
+				getMouseMoveEvent,
+				factoryActions: { selectFactory, deselectFactory, getSelection }
+			} = this;
 			const { x, y: initialY, width, length } = factoryProps;
 			const y = initialY - 10;
-			scaleFactor -= 0.2;
-			if (scaleFactor < 0.4) this.update = () => {};
 			ctx.save();
 			ctx.setLineDash([]);
 			ctx.strokeStyle = '#333';
@@ -26,11 +36,15 @@ export default (ctx) => class Factory {
 				x + (5 * scaleFactor), y + (35 * scaleFactor),
 				x, y + (40 * scaleFactor)
 			);
+
+			const { clientX: mouseX, clientY: mouseY } = getMouseMoveEvent();
+			if (ctx.isPointInPath(mouseX, mouseY)) selectFactory(this.id);
+			else deselectFactory(this.id);
+
 			ctx.closePath();
-			ctx.fillStyle = '#e1b927';
+			ctx.fillStyle = '#E1B927';
 			ctx.fill();
 			ctx.stroke();
-			// ctx.clip();
 
 			ctx.beginPath();
 			ctx.lineTo(x + (20 * scaleFactor), y + (20 * scaleFactor));
@@ -69,7 +83,7 @@ export default (ctx) => class Factory {
 			ctx.fill();
 
 			ctx.beginPath();
-			ctx.fillStyle = '#e1b927';
+			ctx.fillStyle = '#E1B927';
 			ctx.arc(x + (20 * scaleFactor), y + (20 * scaleFactor), (4 * scaleFactor), 0, getRadian(360));
 			ctx.fill();
 
@@ -80,9 +94,10 @@ export default (ctx) => class Factory {
 			ctx.restore();
 		}
 
-		update = (factoryProps, scaleFactor) => {
+		update = (factoryProps) => {
 			this.angle += 2;
+			if (this.currentScaleFactor < this.scaleFactor) this.currentScaleFactor += 0.02;
 			if (this.angle === 120) this.angle = 0;
-			this.draw(factoryProps, scaleFactor);
+			this.draw(factoryProps);
 		}
 };

@@ -3,6 +3,7 @@ export const randomBetween = (min, max) => Math.random() * (max - min) + min;
 export const $4 = [];
 export const $10 = [];
 export const $20 = [];
+export const $30 = [];
 export const $50 = [];
 export const $200 = [];
 
@@ -10,6 +11,7 @@ for (let i = 0; i < 400; i++) {
 	if (i < 4) $4.push(i);
 	if (i < 10) $10.push(i);
 	if (i < 20) $20.push(i);
+	if (i < 30) $30.push(i);
 	if (i < 50) $50.push(i);
 	if (i < 200) $200.push(i);
 }
@@ -41,11 +43,14 @@ export const getSlope = (p1, p2 = { x: 0, y: 0 }) => (p2.y - p1.y) / (p2.x - p1.
 export const getSlopeAngle = (slope) => Math.atan(slope);
 
 export const recallEvery = (callback, timeFunction) => {
-	const timeout = setTimeout(() => {
-		callback();
-		recallEvery(callback, timeFunction);
-	}, timeFunction());
-	return timeout;
+	const time = timeFunction();
+	if (isFinite(time)) {
+		const timeout = setTimeout(() => {
+			callback();
+			recallEvery(callback, timeFunction);
+		}, time);
+		return timeout;
+	}
 };
 
 export const persistEvent = (ev) => ({
