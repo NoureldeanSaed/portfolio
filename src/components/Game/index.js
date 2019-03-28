@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { persistEvent } from '../../helpers';
 import logic from './logic';
 
+import './index.less';
+
 class Game extends Component {
   state = { mouseMoveEvent: { clientX: 0, clientY: 0 }, selection: [] }
 

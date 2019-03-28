@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
-import { RevealGrid, ImgLink } from '..';
+import { FoldingGrid, ImgLink } from '..';
 import { CONTACT_ME_GRID, MY_LINKEDIN, MY_GITHUB } from '../../constants';
 
 import './index.less';
@@ -38,15 +38,14 @@ const Hireme = (props) => {
 				src='./dist/public/github.svg'
 			/>
 			<img className='upwork-img' src='./dist/public/upwork-tile.svg' {...disabled} />
-			<RevealGrid
-				gridWidth={8}
-				gridHeight={11}
+			<FoldingGrid
+				width={8}
+				height={11}
 				className='hireme-grid'
 				levels={CONTACT_ME_GRID}
 				cell={{
 					height: 15,
-					width: 35,
-					className: 'cell'
+					width: 35
 				}}
 				status={revealGridStage}
 				timeout={0.1}
@@ -54,11 +53,5 @@ const Hireme = (props) => {
 		</div>
 	);
 };
-// <div className='hireme-folding'>
-// 	<span /><span /><span /><span /><span /><span className='empty'/>
-// 	<span /><span /><span /><span /><span className='empty'/><span className='empty'/>
-// 	<span /><span /><span /><span /><span /><span className='empty'/>
-// 	<span /><span /><span /><span /><span /><span />
-// </div>
 
 export default Hireme;

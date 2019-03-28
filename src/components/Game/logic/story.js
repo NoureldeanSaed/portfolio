@@ -25,10 +25,8 @@ export default (storyFunctions) => {
 	// Every 15 seconds go COOL
 	else if (time / 15 % 1 < 1) actions.bossMood = bossMood.COOL;
 
-	console.log('getEarthHealth()', getEarthHealth(), getPlanetState());
 	if (time % 4 >= 0 && time % 4 <= 0.02 && !noHumans) createFactory();
 	if (noHumans) actions.bossMood = bossMood.HAPPY;
 	prevTimeStamp = currTimeStamp;
-	console.log('bossMood', bossMood);
 	return actions;
 };

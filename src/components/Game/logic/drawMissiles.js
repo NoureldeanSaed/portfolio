@@ -41,23 +41,24 @@ export default (WIDTH, HEIGHT, globals) => (ctx, vars) => {
     location = 0;
     previousLocation = { x: 300, y: 120 }
 		DX = randomBetween(0.001, 0.003)
+		pathLineDash = [0, 100, 0, 200];
 
     startPath = () => {
-    	const earthSideControlPoint = mirrorToEarthSide(this.bossSideControlPoint);
-    	const bossSideControlPoint = this.bossSideControlPoint;
-    	ctx.beginPath();
-    	ctx.strokeStyle = '#A63232';
-    	ctx.setLineDash([2, 4, 6, 8]);
-    	ctx.moveTo(BOSS_X, BOSS_Y);
-    	ctx.bezierCurveTo(
-    		bossSideControlPoint.x,
-    		bossSideControlPoint.y,
-    		earthSideControlPoint.x,
-    		earthSideControlPoint.y,
-    		EARTH_X,
-    		EARTH_Y
-    	);
-    	ctx.stroke();
+    	// const earthSideControlPoint = mirrorToEarthSide(this.bossSideControlPoint);
+    	// const bossSideControlPoint = this.bossSideControlPoint;
+    	// ctx.beginPath();
+    	// ctx.strokeStyle = '#A63232';
+    	// ctx.setLineDash([2, 4, 6, 8]);
+    	// ctx.moveTo(BOSS_X, BOSS_Y);
+    	// ctx.bezierCurveTo(
+    	// 	bossSideControlPoint.x,
+    	// 	bossSideControlPoint.y,
+    	// 	earthSideControlPoint.x,
+    	// 	earthSideControlPoint.y,
+    	// 	EARTH_X,
+    	// 	EARTH_Y
+    	// );
+    	// ctx.stroke();
     	setTimeout(() => (this.currentStatus = 'FIRE'), 1000 * 2.5);
     }
     fire = () => {
@@ -134,7 +135,7 @@ export default (WIDTH, HEIGHT, globals) => (ctx, vars) => {
 
 	recallEvery(
 		() => missiles.push(new Missile()),
-		() => console.log('madness', madness) || (1000 * missileFrequency[madness])
+		() => (1000 * missileFrequency[madness])
 	);
 
 	const animate = (storyOutput) => {

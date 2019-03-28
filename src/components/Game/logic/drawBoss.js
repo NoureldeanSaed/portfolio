@@ -18,6 +18,8 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 		EYE_SPACING: 10,
 		EYE_X: 15
 	});
+
+
 	const draw = (storyOutput) => {
 		const { bossMood: madness = bossMood.COOL } = storyOutput;
 		if (madnessLevel < madness) pissOff();
@@ -47,14 +49,40 @@ export default (WIDTH, HEIGHT, globals) => (ctx) => {
 		);
 		ctx.fillStyle = '#FFFFFF';
 		ctx.fill();
+		// Spikes
+		ctx.beginPath();
+		const currentPosition = { x: BOSS_X, y: BOSS_Y + bossProps.BOSS_HEIGHT };
+		ctx.moveTo(currentPosition.x, currentPosition.y);
+		const triangle = (baseWidth, point) => {
+			ctx.lineTo(point.x, point.y);
+			let travelled = 0;
+			if (currentPosition.x <= BOSS_X + bossProps.BOSS_WIDTH) {
+				if (currentPosition.y - baseWidth >= BOSS_Y) {
+					currentPosition.y -= baseWidth;
+				} else {
+					travelled = currentPosition.y - BOSS_Y;
+					currentPosition.y = BOSS_Y;
+				}
+				if (currentPosition.x + baseWidth <= BOSS_X + bossProps.BOSS_WIDTH) {
+					currentPosition.x += baseWidth - travelled;
+					travelled = 0;
+				} else {
+
+				}
+				ctx.lineTo(currentPosition.x, currentPosition.y);
+			}
+		};
+		triangle(15, { x: 300, y: 110 });
+		triangle(15, { x: 290, y: 90 });
+		ctx.fillStyle = '#191929';
+		ctx.fill();
 		// Angry eyebrow
 		ctx.beginPath();
-		ctx.moveTo(BOSS_X + bossProps.EYE_X, BOSS_Y + bossProps.FORHEAD_HEIGHT - 1);
-		ctx.lineTo(
+		triangle(
+			BOSS_X + bossProps.EYE_X,
+			BOSS_Y + bossProps.FORHEAD_HEIGHT - 1,
 			BOSS_X + bossProps.BOSS_WIDTH / 2,
-			BOSS_Y + bossProps.FORHEAD_HEIGHT + (bossProps.EYE_HEIGHT * (madnessLevel - 1) / 2) - 1
-		);
-		ctx.lineTo(
+			BOSS_Y + bossProps.FORHEAD_HEIGHT + (bossProps.EYE_HEIGHT * (madnessLevel - 1) / 2) - 1,
 			BOSS_X + (bossProps.EYE_WIDTH * 2) + bossProps.EYE_X + bossProps.EYE_SPACING,
 			BOSS_Y + bossProps.FORHEAD_HEIGHT
 		);
