@@ -8,7 +8,6 @@ const Home = () => {
 	return (
 		<div className='home'>
 			<Game width={600} height={900} className={'game'} />
-			<Hireme />
 		</div>
 	);
 };
