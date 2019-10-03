@@ -1,16 +1,16 @@
 import React from 'react';
-import { Tracker, Portal, Nightskies } from '..';
+
+import { Game, Hireme } from '..';
 
 import './index.less';
 
-const Home = (props) => (
-	<div className='home'>
-		<Tracker />
-		<Portal />
-		<Nightskies />
-		<div>Hello whomever</div>
-		<div>Thanks for cloning :)</div>
-	</div>
-);
+const Home = () => {
+	return (
+		<div className='home'>
+			<Game width={600} height={900} className={'game'} />
+			<Hireme />
+		</div>
+	);
+};
 
 export default Home;

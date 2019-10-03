@@ -1,0 +1,62 @@
+.cell {
+  height: 15px;
+  width: 35px;
+  background: #0F1F3A;
+}
+
+.hireme {
+  &-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 165px;
+    background: #FFF;
+  }
+  &-text {
+    color: #0F1F3A;
+    font-family: "Roboto", sans-serif;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    cursor: pointer;
+  }
+  &-grid {
+    position: relative;
+    // right: 70px;
+    pointer-events: none;
+  }
+}
+
+.linkedin-img, .github-img, .upwork-img {
+  cursor: pointer;
+  position: absolute;
+  & img {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+.linkedin-img {
+  top: 105px;
+  left: 40px;
+}
+
+.github-img {
+  top: 90px;
+  left: 85px;
+}
+
+.upwork-img {
+  width: 42px;
+  height: 42px;
+  top: 105px;
+  right: 100px;
+}

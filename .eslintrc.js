@@ -22,8 +22,6 @@ module.exports = {
   ],
   "rules": {
     "indent": ["error", "tab"],
-    // "react/jsx-indent": [2, "tab"],
-    // "react/jsx-indent-props": [2, "tab"],
 
     "no-mixed-spaces-and-tabs": 0,
     "linebreak-style": [ "error", "unix" ],
