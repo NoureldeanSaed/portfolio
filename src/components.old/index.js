@@ -1,13 +1,8 @@
 import Home from './Home';
-import Game from './Game';
-import Hireme from './Hireme';
-import ImgLink from './ImgLink';
-import RevealGrid from './RevealGrid';
+import Tracker from './Tracker';
+import Portal from './Portal';
+import Nightskies from './Nightskies';
 
 export {
-	Home,
-	Game,
-	Hireme,
-	ImgLink,
-	RevealGrid
+	Home, Tracker, Portal, Nightskies
 };
